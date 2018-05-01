@@ -1,0 +1,415 @@
+<!DOCTYPE html>
+<html>
+<head>
+
+
+<meta charset="UTF-8">
+<title>Sign In</title>
+<!-- <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.1/jquery.min.js"></script>
+<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+<script src="lib/angular.min.js" ></script> -->
+<!-- <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css"> -->
+
+<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
+
+<script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.5.0-beta.2/angular.min.js"></script>
+<script src="http://code.jquery.com/jquery-1.11.3.min.js"></script>
+<script src="lib/bootstrap-3.3.7-dist/js/bootstrap.min.js"></script>
+<link rel="stylesheet" href="lib/bootstrap-3.3.7-dist/css/bootstrap.min.css">
+<link rel="stylesheet" href="js/mainPage.css">
+
+</head>
+<body >
+
+<div class="cotain fill MBG" ng-app="mainApp" ng-controller="mainCtrl" >
+
+	<!-- sign in page with option to sign in or to sign up to our web  -->
+	<div class="signInContainer ng-hide" ng-show="isSignInVisable">
+	  <div class="col-sm-1">
+	  </div>
+	  <form>
+	  
+	  	<div class="col-sm-3">
+	  	<br></br><br></br><br></br><br></br><br></br><br></br>
+		    <div class="form-group">
+		      <label for="usr" class="sr-only"></label>
+		      <input type="text" class="form-control transparentBackground" 
+		      		id="usr" placeholder="Email address" required autofocus ng-model="username" "/>
+		    </div>
+		    <div class="form-group">
+		      <label for="pwd" class="sr-only"></label>
+		      <input type="password" class="form-control transparentBackground" 
+		      		id="pwd" placeholder="Password" required autofocus ng-model="password"/>
+		    </div><p>{{loginMessage}}</p>
+		    <button type="button" class="btn btn-default navbar-btn" ng-click="logIN()">Sign in </button>
+		    
+		    <button type="button" class="btn btn-primary signUPbtn" ng-click="signUpView()">Sign Up</button>
+					    
+	    </div>
+	  </form>
+	  
+	  <div class="col-sm-8">
+	  	
+	  </div>
+	</div>
+    <!-- sign in page end -->
+    
+    <!-- sign up page: in case the user clicked on sign up button we "move him" to this page in order to fill in 
+    some personal data to create new account for him -->
+	<div class="signUpContainer ng-hide" ng-show="isSignUpVisable" >
+		  <div class="col-sm-1">
+		  </div>
+		  <form>
+		  	<div class="col-sm-3">		  	
+		  		<br></br><br></br><br></br><br></br>
+			    <div class="form-group">
+			      <label for="usrname" class="sr-only"></label>
+			      <input type="text" class="form-control transparentBackground" maxlength="10" id="Usrname" placeholder="Username" ng-model="sUsername">
+			    </div>
+			    <div class="form-group">
+			      <label for="pwd" class="sr-only"></label>
+			      <input type="password" class="form-control transparentBackground" maxlength="10" id="pwd"  placeholder="Password" required ng-model="sPassword">
+			    </div>
+			    <div class="form-group">
+			      <label for="pwd" class="sr-only"></label>
+			      <input type="password" class="form-control transparentBackground" maxlength="10" id="pwd"  placeholder="Confirm password" required ng-model="sConfirm" ng-change="confirmPass()">
+			      <h6>{{confirmMes}}</h6>
+			    </div>
+			    <div class="form-group">
+			      <label for="nkname" class="sr-only"></label>
+			      <input type="text" class="form-control transparentBackground" maxlength="20" id="nkname" placeholder="Nickname" ng-model="sNickname">
+			    </div>
+				<div class="form-group">
+			      <label for="img" class="sr-only"></label>
+			      <input type="text" class="form-control transparentBackground" id="img" placeholder="Profile picture" ng-model="sImage">
+				</div>
+			    <div class="form-group">
+			    	<label for="dsc" class="sr-only"></label>
+					<textarea type="text" class="form-control transparentBackground" maxlength="50" rows="3" id="dsc" placeholder="Short description - Up to 50 characters"
+						      data-ng-model="textEntered" ng-change="chrLength = textEntered.length" >
+					</textarea>	
+					<h6><small class="form-help" >{{50-chrLength}} Characters</small></h6>
+			    </div>
+			    	<p>
+			    	
+			    		<button type="button" class="btn btn-default navbar-btn" ng-click="backToSignIn()">Back to sign in </button>
+		    
+		    			<button type="button" class="btn btn-primary signUPbtn" ng-click="signUP()">Sign Me UP</button>
+			    	
+			    	<!-- <a class="btn btn-primary btn-lg" role="button" ng-click="signUP()">Sign Me UP</a> -->
+			    	
+			    	
+			    	</p>
+	  		</div>
+	  	</form>
+	  	<div class="col-sm-8">
+	  	</div>
+	</div>
+	<!-- end sign up page -->
+	
+	<!-- the main page that appears to the user when he is signed in -->
+	<div class="mainPageContainer fill ng-hide  row no-gutter BG"  ng-show="isMainPageShown" >
+	
+
+	      
+		  <div class="fill" ng-controller="mainPageController" id="mainPageController">
+		  		<!-- navigation bar on the top of the main page  -->
+		<nav class="navbar navbar-otalks">
+	        <div class="container-fluid">
+	          <div class="navbar-header" ng-click="returnToMainPage()">
+
+	            	<img src="js/OTALKS2.png" class="media-object " height="50" width="100" 
+	            	alt="alternative text" title="Main Page">
+
+	          </div>
+	          <div class="nav navbar-nav channelNameNavLoc " ng-show="channelnameshow">
+	          <span class="colorMyGray" href="#">{{channelchannel}} </span>
+	          </div>
+	
+	          <ul class="nav navbar-nav navbar-right" >
+	          	<li class="colorMyGray mar">Welcome #{{nickNameIsReady}}</li>
+	         	 <li>
+	         	 	
+	         	 <img ng-src={{imgimg[0].src}}  
+							      class="media-object" height="50" width="50">
+				
+    			</li>
+	            <li><a class="colorMyGray" ng-click="logOut()" href="#"><span class="glyphicon glyphicon-log-out " aria-hidden="true">
+	            </span> Log Out</a></li>
+	          </ul>
+	          
+	          
+	        </div>
+	      </nav>
+		    <!-- side bar that contain the public and private channels that the user is a participate in it -->
+		  	<div class="col-sm-2" id="sidebar">
+				<div id ="sidbarChannelsHolder">
+				
+				  <!-- public channels area on side bar -->
+		           <div class="sidebar-nav" >
+						<p id="sideBarHeader">Public Channels
+				               <span class="glyphicon glyphicon-plus input-group-addon btn btn-primary"
+		                    	id="addChannelID" data-toggle="modal" data-target="#myModal"></span>
+		                </p>
+		                
+		                <!-- add new channel modal  -->
+		                <div class="modal fade" id="myModal" role="dialog">
+						     <div class="modal-dialog">
+						      <div class="modal-content">
+						        <div class="modal-header">
+						          <button type="button" class="close" data-dismiss="modal">&times;</button>
+						          <h4 class="modal-title">Create new Channel</h4>
+						        </div>
+						        <div class="modal-body">
+						          <div class="form-group">
+							      <label for="usr" class="sr-only"></label>
+							      <input type="text" class="form-control" maxlength="30"
+							      		 placeholder="Enter Channel Name" required autofocus ng-model="newChannelName"/>
+							    </div>
+								    <div class="form-group">
+								      <label for="pwd" class="sr-only"></label>
+								      <textarea type="text" class="form-control" maxlength="50" rows="3" id="dsc" 
+								      			placeholder="Short description - Up to 50 characters"
+								      			data-ng-model="newChannelDes" ng-change="chrLength = newChannelDes.length" >
+								      </textarea>
+								      <h6><small class="form-help" >{{50-chrLength}} Characters</small></h6>
+								    </div>
+						        </div>
+						        <div class="modal-footer">
+						          <button type="button" class="btn btn-default" data-dismiss="modal" ng-click="createNewChannel()">Done</button>
+						        </div>
+						      </div>
+						    </div> 
+						</div>
+		                 
+		                 <!-- insert the subscribed public channels to the side bar table -->
+		                <div id="sidepp">
+		              	<table class="table">	
+							<tr class="sideBarChannel" ng-repeat="x in publicChannels">	
+							<td ng-click="connect(x)"> &nbsp;&nbsp; {{x.name}} 
+							<span class="glyphicon glyphicon-bell notFloat" ng-show="x.mention"></span>
+							<span class="badge notFloat" ng-show="x.notif > 0;">{{x.notif}}</span> </td>
+							</tr>
+						</table>
+						</div>
+					</div>
+					
+					<!-- space between subscribed public and private channels -->
+					<div class="tententen"></div>
+					
+					<!-- private channels area on side bar -->
+					<div class="sidebar-nav" >
+						<p id="sideBarHeader">Private Channels</p>
+							<!-- insert the subscribed public channels to the side bar table -->						
+							<div id="sidepp">
+			              	<table class="table">	
+								<tr class="sideBarChannel" ng-repeat="x in privateChannels">	
+								<td ng-click="openPrivateChat(x.name)"> &nbsp;&nbsp; {{x.name}} 
+								<span class="glyphicon glyphicon-bell notFloat" ng-show="x.mention"></span>
+								<span class="badge notFloat" ng-show="x.notif > 0;">{{x.notif}}</span> </td>
+								</tr>
+							</table>
+						</div>
+					 </div>
+					</div>
+		            
+	            </div>
+	            <!-- end side bar  -->
+			
+			<!-- the chat page that appears to the user when he click on a subscribed channel -->
+			<div class="container fill col-sm-8 ChatBG ng-hide" ng-show="isChatShown" id="chatChat">
+				<div class="panel panel-default allPage transparentBackground removeBorder">
+					<div class="panel-body chatheight">
+		  			   <p id="headBody">
+					      <button type="button" class="btn btn-default btn-xs" ng-click="unsubscribe2()">
+					        <span class="glyphicon glyphicon-remove" aria-hidden="true"></span> Unsubscribe
+					      </button>
+					   </p> 
+					   <a id="showMore" href="#" ng-click="getTenMessages()">Show More</a>
+			         <div class="input-group bottom" id="chatInput" >
+					      <textarea class="form-control custom-control" 
+					      		rows="1" ng-model="chatUserInput" id="userInput" 
+					      		onkeydown = "if (event.keyCode == 13) document.getElementById('sendBtn').click()" ></textarea>     
+					      <span class="input-group-addon btn btn-primary" ng-click="sendMessagee();" id="sendBtn">Send</span>
+					  </div>
+			        <div id="chatConsole" >
+			        	 <div ng-repeat="message in chatMessages" >
+			             	
+			             	<!-- chat bubbles that the user sends  -->
+			             		<div class="sentChatBubble" ng-show="useruseruser == message.username">
+							    <div class="media-left">
+							      <img ng-src={{imgimg[0].src}}  
+							      class="media-object" height="50" width="50">
+							      
+							    </div>
+							    <div class="media-body">
+							      <h4 class="media-heading" ng-click="openPrivateChat(message.username)">
+							      <a  href="#">{{nickNameIsReady}}</a></h4>
+							      <span style="width:210px; word-wrap:break-word; display: inline-block;">{{message.content}}</span>
+							    </div>
+							   			<p class="text-right">
+									      <button type="button" class="btn btn-default btn-xs" ng-click="replyToThis(message);" ng-show="message.repliable"
+									      >
+									        <span class="glyphicon glyphicon-share-alt"  
+									        	aria-hidden="true" ></span> Reply
+									      </button>
+									    </p>
+									    <span id="timeStmp">{{message.time}}</span>
+							   </div>
+							   
+							  <!-- chat bubbles that the user receives  -->
+							 <div class="recievedChatBubble" ng-show="useruseruser != message.username">
+							    <div class="media-left">
+							     <img ng-src={{message.imgUrl}}  
+							      class="media-object" height="50" width="50">
+							    </div>
+							    <div class="media-body">
+							      <h4 class="media-heading" ng-click="openPrivateChat(message.username)">
+							      <a href="#"> {{message.nickName}} </a></h4>
+							      <span style="width:210px; word-wrap:break-word; display: inline-block;">{{message.content}}</span>
+							    </div>
+					   			<p class="text-right">
+							      <button type="button" class="btn btn-default btn-xs" ng-click="replyToThis(message);" ng-show="message.repliable"
+							      >
+							        <span class="glyphicon glyphicon-share-alt"  
+							        	aria-hidden="true" ></span> Reply
+							      </button>
+							    </p>
+							    <span id="timeStmp">{{message.time}}</span>
+							  </div>
+			             </div> 
+			        </div>  
+				</div>
+			</div>
+		</div>
+		
+		<div class="col-sm-2 ChatBG fill" id="helperEl" ng-show="isChatShown && !isReplyShown" ></div>
+		<!-- end channel chat page  -->
+			
+		<!-- search area in the main page -->
+		<div class="searchApp col-sm-10" ng-show="isSearchShown">
+			<div class="searchTAG">
+				<div class="row">
+					<div class="col-sm-2"></div>
+					<div class="col-sm-6">
+						<h2>Public Channels Menu</h2>
+						<input class="form-control searchWidth" type="text" ng-model="query"
+							   ng-change="searchSite()"/>	
+									<div class="dropdown searchBtn">
+									    <button class="btn btn-secondary dropdown-toggle" type="button" data-toggle="dropdown">
+									    {{searchOption}} 
+									    <span class="caret"></span></button>
+									    <ul class="dropdown-menu">
+									      <li ng-click="searchBy=true"><a href="#">Channel name</a></li>
+									      <li><a href="#" ng-click="searchBy=false;searchOption='Nickname'">Nickname</a></li>
+									    </ul>
+									  </div>
+							 <br />
+							<br /> 
+						</div>
+						<div class="col-sm-2">
+						</div>
+					</div>
+					
+					<!-- available public channels in the DB  -->
+					<div class="row">
+						<div class="col-sm-2"></div>
+						<div class="col-sm-6" id="scrollable">
+								<div ng-repeat="x in result" style="border-top: 1px solid #ddd;">
+									<!-- ng-bind-html allows to bind a variable to the innerHTML part of the HTML element -->
+									<div  ng-bind="x.channel.channelName" id="chNameBold">
+									</div>
+									<a id="subFloat" href="#" class="subscribeButton" ng-click="subscribeToPublic(x.channel.channelName)" 
+										ng-show="subscribed(x.channel.channelName)">Subscribe</a>
+									<a id="subFloat" href="#" class="subscribeButton" ng-click="unSubscribeToPublic(x.channel.channelName)" 
+										ng-show="unSubscribed(x.channel.channelName)">Unsubscribe</a>
+									<span id="pNum">{{x.participants.length == undefined? 0 : x.participants.length}} Subscribers.</span>
+									<br>
+									<p>
+										<span id="shD">{{x.channel.description}}</span>
+										<br>
+									</p>
+								</div>
+						</div>
+						<div class="col-sm-2"></div>
+					</div>
+
+  		</div>
+  		<!-- end searchApp and public channels scroll -->
+  		
+
+
+  			</div>
+  			
+  		    <!-- replies page that appears to the user when he click on reply button in order to reply on a message -->
+  			<div class="col-sm-4 ChatBG ng-hide" id="last" >
+  			   	<div class="panel panel-default allPage transparentBackground ChatBG" ng-show="isReplyShown">
+			    <div class="panel-body" id="replyConsole">
+		    		<header id="headBody">		
+							<button type="button" class="btn btn-default btn-xs" ng-click="returnToPreviousThread()">
+							   <span class="glyphicon glyphicon-menu-left" aria-hidden="true" ></span> Back
+							</button>	
+			    		<div class="replyBody">
+						    <div class="media-left">
+							      <img ng-src={{imgimg[0].src}}  
+							      class="media-object" height="50" width="50">
+						    </div>
+						    <div class="media-body">
+						      <h4 class="media-heading">
+						      <a href="#">{{currentThread[currentThread.length - 1].nickName}} </a>
+						      </h4>
+						      <span style="width:210px; word-wrap:break-word; display: inline-block;">{{currentThread[currentThread.length - 1].content}}</span>
+						    </div>
+					   </div> 
+					   <span id="timeStmp">{{currentThread[currentThread.length - 1].time}}</span> 
+		    		</header>
+		    		<div class="fixfix" id="scrollable">
+			             <div ng-repeat="reply in currentReplys" id="ooo">
+		             		<div class="replyBody">
+							    <div class="media-left">
+							     <img ng-src={{reply.imgUrl}}  
+							      class="media-object" height="50" width="50">
+							    </div>
+							    <div class="media-body">
+								      <h4 class="media-heading">
+								      <a href="#">{{reply.nickName}}</a></h4>
+								      <span style="width:210px; word-wrap:break-word; display: inline-block;">{{reply.content}}</span>
+							    </div>
+					    		<p class="text-right">			
+							      <button type="button" class="btn btn-default btn-xs" ng-click="replyToReply(reply);">
+							        <span class="glyphicon glyphicon-share-alt" aria-hidden="true" ></span> Reply
+							      </button>
+							  	</p>
+							  	<span id="timeStmp">{{reply.time}}</span> 
+							   </div>
+			             </div> 
+			          </div>
+			  	</div>
+			  	<div class="input-group bottom replyTxt" >
+			      <textarea class="form-control custom-control" 					
+			      		rows="1" ng-model="replyUserInput" id="userReplyInput" 
+			      		onkeydown = "if (event.keyCode == 13) document.getElementById('sendReplyBtn').click()" ></textarea>     
+			      <span class="input-group-addon btn btn-primary" ng-click="sendReply();" id="sendReplyBtn">Send</span>
+			  	</div>
+			</div>
+  			</div>
+  			<!-- end reply to reply page -->
+  			
+		 </div>
+	</div>
+</div>
+<!-- the end  -->
+
+	
+       <!-- </div>
+		
+	  </div>
+	  </div> -->
+	  
+	  
+
+<script src="js/index.js"></script>
+
+</body>
+</html>
